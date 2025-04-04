@@ -1,0 +1,258 @@
+swagger: "2.0"
+info:
+  description: "TechTrain Railway 掲示板API"
+  version: "1.0.0"
+  title: "TechTrain Railway 掲示板API"
+host: railway.bulletinboard.techtrain.dev
+tags:
+  - name: "post"
+    description: "掲示板関連API"
+schemes:
+  - "https"
+paths:
+  /threads:
+    get:
+      tags:
+        - "thread"
+      summary: "掲示板スレッド一覧取得API"
+      description: "掲示板スレッド一覧を取得します。\n
+          10件ずつしかデータが返ってこないため、次の10件を取得したい場合はクエリパラメータの `offset` に何番目のデータまでは取得したのかを指定しなくてはなりません。\n
+          例）21件目のデータから取得したい場合は、 `/threads?offset=20` となります。"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "offset"
+          description: "何番目のから10件取得するか"
+          required: true
+          type: "string"
+      responses:
+        200:
+          "description": "A successful response."
+          "schema":
+            "$ref": "#/definitions/threadListGetResponse"
+        400:
+          description: "Requested data was wrong"
+          schema:
+            $ref: "#/definitions/BadRequestError"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/InternalServerError"
+    post:
+      tags:
+        - "thread"
+      summary: "掲示板スレッド作成API"
+      description: "掲示板スレッドを作成します。"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json" 
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Request Body"
+          required: true
+          schema:
+            $ref: "#/definitions/threadCreateRequest"
+      responses:
+        200:
+          "description": "A successful response."
+          "schema":
+            "$ref": "#/definitions/threadCreateResponse"
+        400:
+          description: "Requested data was wrong"
+          schema:
+            $ref: "#/definitions/BadRequestError"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/InternalServerError"
+            
+  /threads/{threadId}/posts:
+    get:
+      tags:
+        - "post"
+      summary: "掲示板スレッド内投稿一覧取得API"
+      description: "掲示板スレッド内投稿一覧を取得します。\n
+          10件ずつしかデータが返ってこないため、次の10件を取得したい場合はクエリパラメータの `offset` に何番目のデータまでは取得したのかを指定しなくてはなりません。\n
+          例）21件目のデータから取得したい場合は、 `/posts?offset=20` となります。"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "threadId"
+          required: true
+          type: "string"
+          description: "掲示板スレッドid"
+        - in: "query"
+          name: "offset"
+          description: "何番目のから10件取得するか"
+          required: true
+          type: "string"
+      responses:
+        200:
+          "description": "A successful response."
+          "schema":
+            "$ref": "#/definitions/postListGetResponse"
+        404:
+          description: "Not found error"
+          schema:
+            $ref: "#/definitions/NotFoundError"
+        400:
+          description: "Requested data was wrong"
+          schema:
+            $ref: "#/definitions/BadRequestError"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/InternalServerError"
+    post:
+      tags:
+        - "post"
+      summary: "掲示板投稿API"
+      description: "掲示板投稿の新規作成をします。"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: threadId
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Request Body"
+          required: true
+          schema:
+            $ref: "#/definitions/postCreateRequest"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/postCreateResponse"
+        400:
+          description: "Requested data was wrong"
+          schema:
+            $ref: "#/definitions/BadRequestError"
+        500:
+          description: "Internal server error"
+          schema:
+            $ref: "#/definitions/InternalServerError"
+definitions:
+  postCreateRequest:
+    type: "object"
+    properties:
+      post:
+        type: "string"
+        description: "投稿内容"
+  postCreateResponse:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "掲示板投稿id"
+      threadId:
+        type: "string"
+        description: "掲示板スレッドid"
+      post:
+        type: "string"
+        description: "投稿内容"
+  postListGetResponse:
+    type: "object"
+    properties:
+      threadId:
+        type: "string"
+        description: "掲示板スレッドid"
+      posts:
+        type: "array"
+        items:
+          $ref: "#/definitions/postData"
+  postData:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "掲示板投稿id"
+      post:
+        type: "string"
+        description: "掲示板投稿内容"
+  threadCreateRequest:
+    type: "object"
+    properties:
+      title:
+        type: "string"
+        description: "スレッド名"
+  threadCreateResponse:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "スレッドid"
+      title:
+        type: "string"
+        description: "スレッド名"
+  threadListGetResponse:
+    type: "array"
+    items:
+      $ref: "#/definitions/threadData"
+  threadData:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "掲示板スレッドid"
+      title:
+        type: "string"
+        description: "スレッド名"
+        
+  NotFoundError:
+    type: "object"
+    properties:
+      ErrorCode:
+        type: "number"
+        description: "エラーコード"
+        example: 404
+      ErrorMessageJP:
+        type: "string"
+        description: "エラーメッセージ（日本語）"
+        example: "そのスレッドは存在しません。"
+      ErrorMessageEN:
+        type: "string"
+        description: "エラーメッセージ（英語）"
+        example: "This thread is not exists."
+  BadRequestError:
+    type: "object"
+    properties:
+      ErrorCode:
+        type: "number"
+        description: "エラーコード"
+        example: 400
+      ErrorMessageJP:
+        type: "string"
+        description: "エラーメッセージ（日本語）"
+        example: "バリデーションエラー"
+      ErrorMessageEN:
+        type: "string"
+        description: "エラーメッセージ（英語）"
+        example: "validation error"
+  InternalServerError:
+    type: "object"
+    properties:
+      ErrorCode:
+        type: "number"
+        description: "エラーコード"
+        example: 500
+      ErrorMessageJP:
+        type: "string"
+        description: "エラーメッセージ（日本語）"
+        example: "サーバでエラーが発生しました。"
+      ErrorMessageEN:
+        type: "string"
+        description: "エラーメッセージ（英語）"
+        example: "Error occurred at server."
