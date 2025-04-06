@@ -26,3 +26,8 @@ export const createThread = async (title: string) => {
     const res = await axios.post(`${BASE_URL}/threads`, { title });
     return res.data;
 };
+
+export const fetchPosts = async (threadId: string, offset: number = 0) => {
+  const res = await axios.get(`${BASE_URL}/threads/${threadId}/posts?offset=${offset}`);
+  return res.data;
+};
