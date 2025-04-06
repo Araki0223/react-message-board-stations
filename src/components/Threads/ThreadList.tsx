@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchThreads } from "../../utils/threads"; // スレッド一覧取得の関数をインポート
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const ThreadList = () => {
   const [threads, setThreads] = useState<Array<{ id: string; title: string }>>([]); // 初期値を空配列に設定
@@ -34,7 +35,7 @@ const ThreadList = () => {
     <div>
       <h2>スレッド一覧</h2>
       <button onClick={handleCreateThread}>新規作成</button>
-      <ul>
+      {/* <ul>
         {Array.isArray(threads) ? (
           threads.map((thread) => (
             <li key={thread.id}>{thread.title}</li>
@@ -42,6 +43,13 @@ const ThreadList = () => {
         ) : (
           <p>データの取得に失敗しました</p>
         )}
+      </ul> */}
+      <ul>
+        {threads.map((thread) => (
+          <li key={thread.id}>
+          <Link to={`/threads/${thread.id}`}>{thread.title}</Link>
+          </li>
+        ))}
       </ul>
     </div>
   );

@@ -31,3 +31,19 @@ export const fetchPosts = async (threadId: string, offset: number = 0) => {
   const res = await axios.get(`${BASE_URL}/threads/${threadId}/posts?offset=${offset}`);
   return res.data;
 };
+
+/**
+ * 指定したスレッドに投稿を作成する
+ * @param threadId 投稿するスレッドのID
+ * @param post 投稿内容
+ */
+export const createPost = async (threadId: string, post: string) => {
+  const response = await axios.post(
+    `${BASE_URL}/threads/${threadId}/posts`, // ← URLを完成させよう
+    {
+      post: post // ← ボディの中身
+    }
+  );
+
+  return response.data; // ← 必要ならレスポンスデータを返す
+};
