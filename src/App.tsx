@@ -1,14 +1,16 @@
-// import React from "react";
-// import ____ from "react"; // React の基本的な機能を使うための import
-import ThreadList from "./components/ThreadList"; // スレッド一覧コンポーネントをインポート
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ThreadList from "./components/Threads/ThreadList";
+import ThreadNew from "./components/Threads/ThreadNew";
 
-const App = () => { // コンポーネントの定義
+const App = () => {
   return (
-    <div> {/* React のルート要素（フラグメントを使うか div にするか？） */}
-      <h2>スレッド掲示板</h2> {/* 見出しを追加 */}
-      <ThreadList /> {/* スレッド一覧コンポーネントを表示 */}
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<ThreadList />} />
+        <Route path="/threads/new" element={<ThreadNew />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 
-export default App; // App コンポーネントをエクスポート
+export default App;

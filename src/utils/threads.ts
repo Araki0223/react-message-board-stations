@@ -1,6 +1,6 @@
 // @ts-check
 import axios from "axios";
-const BASE_URL = "https://railway.bulletinboard.techtrain.dev";
+import { BASE_URL } from "../const";
 
 /**
  * スレッド一覧を取得する（１０件ずつ）
@@ -23,11 +23,6 @@ export const fetchThreads = async (offset: number = 0) => {
  * @returns 作成したスレッドの情報
  */
 export const createThread = async (title: string) => {
-    try {
-        const response = await axios.post('${BASE_URL}/threads', { title });
-        return response.data; // 作成したスレッドの情報を返す
-    } catch (error) {
-        console.error("スレッドの作成に失敗しました", error);
-        throw error;
-    }
+    const res = await axios.post(`${BASE_URL}/threads`, { title });
+    return res.data;
 };

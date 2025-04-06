@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { fetchThreads } from "../api/threads"; // スレッド一覧取得の関数をインポート
+import { fetchThreads } from "../../utils/threads"; // スレッド一覧取得の関数をインポート
+import { useNavigate } from "react-router-dom";
 
 const ThreadList = () => {
   const [threads, setThreads] = useState<Array<{ id: string; title: string }>>([]); // 初期値を空配列に設定
+  const navigate = useNavigate(); // 画面遷移に使うReact Routerの関数
 
   useEffect(() => {
     // スレッド一覧を取得して state にセット
@@ -24,9 +26,14 @@ const ThreadList = () => {
     fetchData();
   }, []);
 
+  const handleCreateThread = () => {
+    navigate("/threads/new"); // スレッド新規作成画面に遷移
+  };
+
   return (
     <div>
       <h2>スレッド一覧</h2>
+      <button onClick={handleCreateThread}>新規作成</button>
       <ul>
         {Array.isArray(threads) ? (
           threads.map((thread) => (
